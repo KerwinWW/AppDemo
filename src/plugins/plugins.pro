@@ -4,7 +4,11 @@ TEMPLATE  = subdirs
 
 SUBDIRS   = \
     coreplugin \
-    welcome
+#    vcsbase \
+#    texteditor\
+#    cpptools\
+#    projectexplorer \
+#    welcome
 
 
 for(p, SUBDIRS) {

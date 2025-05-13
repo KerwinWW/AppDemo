@@ -443,7 +443,6 @@ int main(int argc, char **argv)
     SharedTools::QtSingleApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
     int numberofArguments = static_cast<int>(options.appArguments.size());
-
     SharedTools::QtSingleApplication app((QLatin1String(Core::Constants::IDE_DISPLAY_NAME)),
                                          numberofArguments,
                                          options.appArguments.data());
@@ -482,7 +481,6 @@ int main(int argc, char **argv)
     PluginManager::setPluginIID(QLatin1String("org.qt-project.Qt.QtCreatorPlugin"));
     PluginManager::setGlobalSettings(globalSettings);
     PluginManager::setSettings(settings);
-
     QTranslator translator;
     QTranslator qtTranslator;
     QStringList uiLanguages;

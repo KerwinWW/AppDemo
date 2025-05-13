@@ -34,6 +34,7 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <QSet>
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>

@@ -26,6 +26,7 @@ SOURCES += \
     $$PWD/environment.cpp \
     $$PWD/environmentmodel.cpp \
     $$PWD/environmentdialog.cpp \
+    $$PWD/globalfilechangeblocker.cpp \
     $$PWD/qtcprocess.cpp \
     $$PWD/reloadpromptutils.cpp \
     $$PWD/settingsaccessor.cpp \
@@ -41,6 +42,7 @@ SOURCES += \
     $$PWD/filesearch.cpp \
     $$PWD/pathchooser.cpp \
     $$PWD/pathlisteditor.cpp \
+    $$PWD/touchbar/touchbar.cpp \
     $$PWD/wizard.cpp \
     $$PWD/wizardpage.cpp \
     $$PWD/filewizardpage.cpp \
@@ -132,8 +134,12 @@ HEADERS += \
     $$PWD/environment.h \
     $$PWD/environmentmodel.h \
     $$PWD/environmentdialog.h \
+    $$PWD/globalfilechangeblocker.h \
     $$PWD/pointeralgorithm.h \
     $$PWD/qtcprocess.h \
+    $$PWD/touchbar/touchbar.h \
+#    $$PWD/touchbar/touchbar_appdelegate_mac_p.h \
+#    $$PWD/touchbar/touchbar_mac_p.h \
     $$PWD/utils_global.h \
     $$PWD/reloadpromptutils.h \
     $$PWD/settingsaccessor.h \
@@ -270,15 +276,7 @@ FORMS += $$PWD/filewizardpage.ui \
 
 RESOURCES += $$PWD/utils.qrc
 
-osx {
-    HEADERS += \
-        $$PWD/theme/theme_mac.h \
-        $$PWD/fileutils_mac.h
-    OBJECTIVE_SOURCES += \
-        $$PWD/theme/theme_mac.mm \
-        $$PWD/fileutils_mac.mm \
-        $$PWD/processhandle_mac.mm
-    LIBS += -framework Foundation -framework AppKit
-}
-
 include(mimetypes/mimetypes.pri)
+
+DISTFILES += \
+    $$PWD/touchbar/touchbar.pri

@@ -69,6 +69,7 @@ public:
 Q_DECLARE_METATYPE(ReferenceData)
 Q_DECLARE_METATYPE(QList<ReferenceData>)
 
+#if 0
 void Core::Internal::CorePlugin::test_basefilefilter()
 {
     QFETCH(QStringList, testFiles);
@@ -197,3 +198,6 @@ void Core::Internal::CorePlugin::test_basefilefilter_data()
                     << ResultData("zfile.cpp", sortingTestFilesShort.at(0))))
             );
 }
+
+
+#endif

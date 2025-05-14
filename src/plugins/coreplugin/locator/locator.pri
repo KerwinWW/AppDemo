@@ -1,4 +1,4 @@
-QT *= qml
+QT *= qml testlib
 
 HEADERS += \
     $$PWD/locator.h \

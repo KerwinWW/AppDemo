@@ -89,6 +89,7 @@
 #include <QStatusBar>
 #include <QStyleFactory>
 #include <QTimer>
+#include <QToolBar>
 #include <QToolButton>
 #include <QUrl>
 
@@ -120,6 +121,13 @@ MainWindow::MainWindow() :
     m_toggleLeftSideBarButton(new QToolButton),
     m_toggleRightSideBarButton(new QToolButton)
 {
+
+    QAction *actSetting = new QAction("setting");
+    actSetting->setIcon(QIcon(":/core/images/qtcreatorlogo-big.png"));
+    QToolBar *mainToolbar = new QToolBar("ToolBar",this);
+    mainToolbar->addAction(actSetting);
+    addToolBar(Qt::TopToolBarArea,mainToolbar);
+
 
     (void) new DocumentManager(this);
 
@@ -174,6 +182,7 @@ MainWindow::MainWindow() :
     m_messageManager = new MessageManager;
     m_editorManager = new EditorManager(this);
     m_externalToolManager = new ExternalToolManager();
+
     setCentralWidget(m_modeStack);
 
     m_progressManager->progressView()->setParent(this);

@@ -36,6 +36,7 @@
 
 #include <QDebug>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPixmapCache>
@@ -87,7 +88,7 @@ QSize FancyTabBar::tabSizeHint(bool minimum) const
 {
     if (m_iconsOnly) {
         return {Core::Constants::MODEBAR_ICONSONLY_BUTTON_SIZE,
-                    Core::Constants::MODEBAR_ICONSONLY_BUTTON_SIZE / (minimum ? 3 : 1)};
+                Core::Constants::MODEBAR_ICONSONLY_BUTTON_SIZE / (minimum ? 3 : 1)};
     }
 
     QFont boldFont(font());
@@ -309,7 +310,7 @@ static void paintIconAndText(QPainter *painter, const QRect &rect,
     const bool drawIcon = rect.height() > 36;
     if (drawIcon) {
         const int textHeight =
-                painter->fontMetrics().boundingRect(rect, Qt::TextWordWrap, text).height();
+            painter->fontMetrics().boundingRect(rect, Qt::TextWordWrap, text).height();
         const QRect tabIconRect(rect.adjusted(0, 4, 0, -textHeight));
         const QIcon::Mode iconMode = enabled ? (selected ? QIcon::Active : QIcon::Normal)
                                              : QIcon::Disabled;
@@ -466,46 +467,74 @@ signals:
 // FancyTabWidget
 //////
 
+/**
+ * @brief FancyTabWidget::FancyTabWidget
+ * @param parent
+ * 左侧边栏m_selectionWidget分为三部分：
+ * 最上部：StyledBar
+ * 中间区域：FancyTabBar，可通过接口添加图标绑定插件，上对齐
+ * 底部区域：m_cornerWidgetContainer，可通过接口添加图标绑定插件，下对齐
+ */
 FancyTabWidget::FancyTabWidget(QWidget *parent)
     : QWidget(parent)
 {
+    //左侧栏左上角小缺口位置
+    auto bar = new StyledBar;
+    //    auto fancyButton = new FancyColorButton(this);
+    //    connect(fancyButton, &FancyColorButton::clicked, this, &FancyTabWidget::topAreaClicked);
+    auto layout = new QVBoxLayout(bar);
+    layout->setMargin(0);
+    layout->setSpacing(0);
+    layout->addWidget(new QLabel("ccc"));
+    layout->addWidget(new QLabel("ddd"));
+    layout->addWidget(new QLabel("eee"));
+
+    //tab页切换按钮
     m_tabBar = new FancyTabBar(this);
     m_tabBar->setObjectName("ModeSelector"); // used for UI introduction
 
-    m_selectionWidget = new QWidget(this);
-    auto selectionLayout = new QVBoxLayout;
-    selectionLayout->setSpacing(0);
-    selectionLayout->setMargin(0);
-
-    auto bar = new StyledBar;
-    auto layout = new QHBoxLayout(bar);
-    layout->setMargin(0);
-    layout->setSpacing(0);
-    auto fancyButton = new FancyColorButton(this);
-    connect(fancyButton, &FancyColorButton::clicked, this, &FancyTabWidget::topAreaClicked);
-    layout->addWidget(fancyButton);
-    selectionLayout->addWidget(bar);
-
-    selectionLayout->addWidget(m_tabBar);
-    selectionLayout->addStretch(1);
-    m_selectionWidget->setLayout(selectionLayout);
-    m_selectionWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-
-    m_cornerWidgetContainer = new QWidget(this);
-    m_cornerWidgetContainer->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
-    m_cornerWidgetContainer->setAutoFillBackground(false);
-
+    QLabel *label = new QLabel();
+    label->setText("aaa");
+    label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+    label->setStyleSheet("background-color:white");
+    QLabel *label2 = new QLabel();
+    label2->setText("bbbbbb");
+    label2->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+    label2->setStyleSheet("color:red");
     auto cornerWidgetLayout = new QVBoxLayout;
     cornerWidgetLayout->setSpacing(0);
     cornerWidgetLayout->setMargin(0);
+    cornerWidgetLayout->addWidget(label);
+    cornerWidgetLayout->addWidget(label2);
     cornerWidgetLayout->addStretch();
+
+    //角落部件容器（位置左侧边栏下方）此控制下方有一个横线
+    m_cornerWidgetContainer = new QWidget(this);
+    m_cornerWidgetContainer->setContentsMargins(0, 0, 0, 0);
+    m_cornerWidgetContainer->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+    m_cornerWidgetContainer->setAutoFillBackground(false);
     m_cornerWidgetContainer->setLayout(cornerWidgetLayout);
 
+    auto selectionLayout = new QVBoxLayout;
+    selectionLayout->setSpacing(0);
+    selectionLayout->setMargin(0);
+    selectionLayout->addWidget(bar);      //添加小缺口风格
+    selectionLayout->addWidget(m_tabBar); //添加切换按钮
+    selectionLayout->addStretch(1);       //添加占位
     selectionLayout->addWidget(m_cornerWidgetContainer, 0);
+    selectionLayout->addWidget(new QLabel("fff"));
 
+    m_selectionWidget = new QWidget(this);
+    m_selectionWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    m_selectionWidget->setLayout(selectionLayout);
+    //    m_selectionWidget->setStyleSheet("background-color:blue");
+
+    //内容区域堆叠窗口
     m_modesStack = new QStackedLayout;
+    //底部状态栏
     m_statusBar = new QStatusBar;
     m_statusBar->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+    m_statusBar->setStyleSheet("background-color:yellow");
 
     auto vlayout = new QVBoxLayout;
     vlayout->setMargin(0);

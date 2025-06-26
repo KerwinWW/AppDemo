@@ -142,7 +142,9 @@ bool CorePlugin::initialize(const QStringList &arguments, QString *errorMessage)
         *errorMessage = tr("No themes found in installation.");
         return false;
     }
+
     const CoreArguments args = parseArguments(arguments);
+
     Theme::initialPalette(); // Initialize palette before setting it
     Theme *themeFromArg = ThemeEntry::createTheme(args.themeId);
     setCreatorTheme(themeFromArg ? themeFromArg
@@ -251,12 +253,12 @@ QObject *CorePlugin::remoteCommand(const QStringList & /* options */,
         connect(ExtensionSystem::PluginManager::instance(), &ExtensionSystem::PluginManager::initializationDone,
                 this, [this, workingDirectory, args]() {
                     remoteCommand(QStringList(), workingDirectory, args);
-        });
+                });
         return nullptr;
     }
     IDocument *res = m_mainWindow->openFiles(
-                args, ICore::OpenFilesFlags(ICore::SwitchMode | ICore::CanContainLineAndColumnNumbers | ICore::SwitchSplitIfAlreadyVisible),
-                workingDirectory);
+        args, ICore::OpenFilesFlags(ICore::SwitchMode | ICore::CanContainLineAndColumnNumbers | ICore::SwitchSplitIfAlreadyVisible),
+        workingDirectory);
     m_mainWindow->raiseWindow();
     return res;
 }
@@ -268,7 +270,7 @@ void CorePlugin::fileOpenRequest(const QString &f)
 
 void CorePlugin::addToPathChooserContextMenu(Utils::PathChooser *pathChooser, QMenu *menu)
 {
-    QList<QAction*> actions = menu->actions();
+    QList<QAction *> actions = menu->actions();
     QAction *firstAction = actions.isEmpty() ? nullptr : actions.first();
 
     if (QDir().exists(pathChooser->path())) {

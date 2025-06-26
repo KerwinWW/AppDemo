@@ -101,35 +101,35 @@ namespace Internal {
 
 enum { debugMainWindow = 0 };
 
-MainWindow::MainWindow() :
-    AppMainWindow(),
-    m_coreImpl(new ICore(this)),
-    m_lowPrioAdditionalContexts(Constants::C_GLOBAL),
-    m_settingsDatabase(new SettingsDatabase(QFileInfo(PluginManager::settings()->fileName()).path(),
-                                            QLatin1String(Constants::IDE_CASED_ID),
-                                            this)),
-    m_progressManager(new ProgressManagerPrivate),
-    m_jsExpander(new JsExpander),
-//    m_vcsManager(new VcsManager),
-    m_modeStack(new FancyTabWidget(this)),
-    m_generalSettings(new GeneralSettings),
-    m_systemSettings(new SystemSettings),
-    m_shortcutSettings(new ShortcutSettings),
-    m_toolSettings(new ToolSettings),
-    m_mimeTypeSettings(new MimeTypeSettings),
-    m_systemEditor(new SystemEditor),
-    m_toggleLeftSideBarButton(new QToolButton),
-    m_toggleRightSideBarButton(new QToolButton)
+MainWindow::MainWindow()
+    : AppMainWindow()
+    , m_coreImpl(new ICore(this))
+    , m_lowPrioAdditionalContexts(Constants::C_GLOBAL)
+    , m_settingsDatabase(new SettingsDatabase(QFileInfo(PluginManager::settings()->fileName()).path(),
+                                              QLatin1String(Constants::IDE_CASED_ID),
+                                              this))
+    , m_progressManager(new ProgressManagerPrivate)
+    , m_jsExpander(new JsExpander)
+    ,
+    //    m_vcsManager(new VcsManager),
+    m_modeStack(new FancyTabWidget(this))
+    , m_generalSettings(new GeneralSettings)
+    , m_systemSettings(new SystemSettings)
+    , m_shortcutSettings(new ShortcutSettings)
+    , m_toolSettings(new ToolSettings)
+    , m_mimeTypeSettings(new MimeTypeSettings)
+    , m_systemEditor(new SystemEditor)
+    , m_toggleLeftSideBarButton(new QToolButton)
+    , m_toggleRightSideBarButton(new QToolButton)
 {
-
+    //添加工具栏
     QAction *actSetting = new QAction("setting");
     actSetting->setIcon(QIcon(":/core/images/qtcreatorlogo-big.png"));
-    QToolBar *mainToolbar = new QToolBar("ToolBar",this);
+    QToolBar *mainToolbar = new QToolBar("ToolBar", this);
     mainToolbar->addAction(actSetting);
-    addToolBar(Qt::TopToolBarArea,mainToolbar);
+    addToolBar(Qt::TopToolBarArea, mainToolbar);
 
-
-    (void) new DocumentManager(this);
+    (void)new DocumentManager(this);
 
     HistoryCompleter::setSettings(PluginManager::settings());
 
@@ -142,7 +142,7 @@ MainWindow::MainWindow() :
     QString baseName = QApplication::style()->objectName();
     // Sometimes we get the standard windows 95 style as a fallback
     if (HostOsInfo::isAnyUnixHost() && !HostOsInfo::isMacHost()
-            && baseName == QLatin1String("windows")) {
+        && baseName == QLatin1String("windows")) {
         baseName = QLatin1String("fusion");
     }
 
@@ -172,6 +172,12 @@ MainWindow::MainWindow() :
         }
     });
 
+    //    FancyButton *btn = new FancyButton(m_fancyTabWidgt);
+    //    //    btn->setIcon(QIcon(":/icon/image/options.png"));
+    //    btn->setIcon(QIcon(":/icon/image/projects.png"));
+    //    btn->setIconSize(QSize(48, 32));
+    //    connect(btn, &FancyButton::clicked, actSetting, &QAction::triggered);
+
     registerDefaultContainers();
     registerDefaultActions();
 
@@ -186,17 +192,20 @@ MainWindow::MainWindow() :
     setCentralWidget(m_modeStack);
 
     m_progressManager->progressView()->setParent(this);
-
     connect(qApp, &QApplication::focusChanged, this, &MainWindow::updateFocusWidget);
 
     // Add small Toolbuttons for toggling the navigation widgets
+    m_toggleRightSideBarButton->setIcon(QIcon(":/core/images/settingscategory_core.png"));
+    m_toggleRightSideBarButton->setText("actiocn");
+    m_toggleRightSideBarButton->setStyleSheet("background-color:red");
+
     StatusBarManager::addStatusBarWidget(m_toggleLeftSideBarButton, StatusBarManager::First);
     int childsCount = statusBar()->findChildren<QWidget *>(QString(), Qt::FindDirectChildrenOnly).count();
     statusBar()->insertPermanentWidget(childsCount - 1, m_toggleRightSideBarButton); // before QSizeGrip
 
-//    setUnifiedTitleAndToolBarOnMac(true);
+    //    setUnifiedTitleAndToolBarOnMac(true);
     //if (HostOsInfo::isAnyUnixHost())
-        //signal(SIGINT, handleSigInt);
+    //signal(SIGINT, handleSigInt);
 
     statusBar()->setProperty("p_styled", true);
 
@@ -233,7 +242,7 @@ void MainWindow::appendAboutInformation(const QString &line)
     m_aboutInformation.append(line);
 }
 
-void MainWindow::addPreCloseListener(const std::function<bool ()> &listener)
+void MainWindow::addPreCloseListener(const std::function<bool()> &listener)
 {
     m_preCloseListeners.append(listener);
 }
@@ -263,8 +272,8 @@ MainWindow::~MainWindow()
     m_systemEditor = nullptr;
     delete m_printer;
     m_printer = nullptr;
-//    delete m_vcsManager;
-//    m_vcsManager = nullptr;
+    //    delete m_vcsManager;
+    //    m_vcsManager = nullptr;
     //we need to delete editormanager and statusbarmanager explicitly before the end of the destructor,
     //because they might trigger stuff that tries to access data from editorwindow, like removeContextWidget
 
@@ -296,7 +305,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::init()
 {
-//    setStyleSheet("background-color:red");
+    //    setStyleSheet("background-color:red");
     m_progressManager->init(); // needs the status bar manager
     MessageManager::init();
 }
@@ -308,7 +317,7 @@ void MainWindow::extensionsInitialized()
     m_windowSupport = new WindowSupport(this, Context("Core.MainWindow"));
     m_windowSupport->setCloseActionEnabled(false);
     OutputPaneManager::create();
-//    m_vcsManager->extensionsInitialized();
+    //    m_vcsManager->extensionsInitialized();
     m_leftNavigationWidget->setFactories(INavigationWidgetFactory::allNavigationFactories());
     m_rightNavigationWidget->setFactories(INavigationWidgetFactory::allNavigationFactories());
 
@@ -401,7 +410,6 @@ void MainWindow::registerDefaultContainers()
     filemenu->appendGroup(Constants::G_FILE_PRINT);
     filemenu->appendGroup(Constants::G_FILE_OTHER);
     connect(filemenu->menu(), &QMenu::aboutToShow, this, &MainWindow::aboutToShowRecentFiles);
-
 
     // Edit Menu
     ActionContainer *medit = ActionManager::createMenu(Constants::M_EDIT);
@@ -702,7 +710,7 @@ void MainWindow::registerDefaultActions()
     connect(m_toggleLeftSideBarAction, &QAction::triggered,
             this, [this](bool visible) { setSidebarVisible(visible, Side::Left); });
     ProxyAction *toggleLeftSideBarProxyAction =
-            ProxyAction::proxyActionWithIcon(cmd->action(), Utils::Icons::TOGGLE_LEFT_SIDEBAR_TOOLBAR.icon());
+        ProxyAction::proxyActionWithIcon(cmd->action(), Utils::Icons::TOGGLE_LEFT_SIDEBAR_TOOLBAR.icon());
     m_toggleLeftSideBarButton->setDefaultAction(toggleLeftSideBarProxyAction);
     mwindow->addAction(cmd, Constants::G_WINDOW_VIEWS);
     m_toggleLeftSideBarAction->setEnabled(false);
@@ -718,7 +726,7 @@ void MainWindow::registerDefaultActions()
     connect(m_toggleRightSideBarAction, &QAction::triggered,
             this, [this](bool visible) { setSidebarVisible(visible, Side::Right); });
     ProxyAction *toggleRightSideBarProxyAction =
-            ProxyAction::proxyActionWithIcon(cmd->action(), Utils::Icons::TOGGLE_RIGHT_SIDEBAR_TOOLBAR.icon());
+        ProxyAction::proxyActionWithIcon(cmd->action(), Utils::Icons::TOGGLE_RIGHT_SIDEBAR_TOOLBAR.icon());
     m_toggleRightSideBarButton->setDefaultAction(toggleRightSideBarProxyAction);
     mwindow->addAction(cmd, Constants::G_WINDOW_VIEWS);
     m_toggleRightSideBarButton->setEnabled(false);
@@ -755,11 +763,11 @@ void MainWindow::registerDefaultActions()
     tmpaction->setEnabled(true);
     connect(tmpaction, &QAction::triggered, this, &MainWindow::aboutPlugins);
     // About Qt Action
-//    tmpaction = new QAction(tr("About &Qt..."), this);
-//    cmd = ActionManager::registerAction(tmpaction, Constants:: ABOUT_QT);
-//    mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
-//    tmpaction->setEnabled(true);
-//    connect(tmpaction, &QAction::triggered, qApp, &QApplication::aboutQt);
+    //    tmpaction = new QAction(tr("About &Qt..."), this);
+    //    cmd = ActionManager::registerAction(tmpaction, Constants:: ABOUT_QT);
+    //    mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
+    //    tmpaction->setEnabled(true);
+    //    connect(tmpaction, &QAction::triggered, qApp, &QApplication::aboutQt);
     // About sep
     if (!HostOsInfo::isMacHost()) { // doesn't have the "About" actions in the Help menu
         tmpaction = new QAction(this);
@@ -791,15 +799,15 @@ void MainWindow::registerModeSelectorStyleActions()
 
     m_setModeSelectorStyleIconsAndTextAction = stylesGroup->addAction(tr("Icons and Text"));
     connect(m_setModeSelectorStyleIconsAndTextAction, &QAction::triggered,
-                                 [] { ModeManager::setModeStyle(ModeManager::Style::IconsAndText); });
+            [] { ModeManager::setModeStyle(ModeManager::Style::IconsAndText); });
     m_setModeSelectorStyleIconsAndTextAction->setCheckable(true);
     m_setModeSelectorStyleIconsOnlyAction = stylesGroup->addAction(tr("Icons Only"));
     connect(m_setModeSelectorStyleIconsOnlyAction, &QAction::triggered,
-                                 [] { ModeManager::setModeStyle(ModeManager::Style::IconsOnly); });
+            [] { ModeManager::setModeStyle(ModeManager::Style::IconsOnly); });
     m_setModeSelectorStyleIconsOnlyAction->setCheckable(true);
     m_setModeSelectorStyleHiddenAction = stylesGroup->addAction(tr("Hidden"));
     connect(m_setModeSelectorStyleHiddenAction, &QAction::triggered,
-                                 [] { ModeManager::setModeStyle(ModeManager::Style::Hidden); });
+            [] { ModeManager::setModeStyle(ModeManager::Style::Hidden); });
     m_setModeSelectorStyleHiddenAction->setCheckable(true);
 
     styleMenu->addActions(stylesGroup->actions());
@@ -810,8 +818,8 @@ void MainWindow::openFile()
     openFiles(EditorManager::getOpenFileNames(), ICore::SwitchMode);
 }
 
-static IDocumentFactory *findDocumentFactory(const QList<IDocumentFactory*> &fileFactories,
-                                     const QFileInfo &fi)
+static IDocumentFactory *findDocumentFactory(const QList<IDocumentFactory *> &fileFactories,
+                                             const QFileInfo &fi)
 {
     const QString typeName = Utils::mimeTypeForFile(fi).name();
     return Utils::findOrDefault(fileFactories, [typeName](IDocumentFactory *f) {
@@ -836,7 +844,7 @@ IDocument *MainWindow::openFiles(const QStringList &fileNames,
                                  ICore::OpenFilesFlags flags,
                                  const QString &workingDirectory)
 {
-    const QList<IDocumentFactory*> documentFactories = IDocumentFactory::allDocumentFactories();
+    const QList<IDocumentFactory *> documentFactories = IDocumentFactory::allDocumentFactories();
     IDocument *res = nullptr;
 
     foreach (const QString &fileName, fileNames) {
@@ -857,7 +865,7 @@ IDocument *MainWindow::openFiles(const QStringList &fileNames,
         } else {
             QFlags<EditorManager::OpenEditorFlag> emFlags;
             if (flags & ICore::CanContainLineAndColumnNumbers)
-                emFlags |=  EditorManager::CanContainLineAndColumnNumber;
+                emFlags |= EditorManager::CanContainLineAndColumnNumber;
             if (flags & ICore::SwitchSplitIfAlreadyVisible)
                 emFlags |= EditorManager::SwitchSplitIfAlreadyVisible;
             IEditor *editor = EditorManager::openEditor(absoluteFilePath, Id(), emFlags);
@@ -889,7 +897,7 @@ void MainWindow::exit()
     // since on close we are going to delete everything
     // so to prevent the deleting of that object we
     // just append it
-    QTimer::singleShot(0, this,  &QWidget::close);
+    QTimer::singleShot(0, this, &QWidget::close);
 }
 
 void MainWindow::openFileWith()
@@ -941,7 +949,7 @@ void MainWindow::updateFocusWidget(QWidget *old, QWidget *now)
     Q_UNUSED(old)
 
     // Prevent changing the context object just because the menu or a menu item is activated
-    if (qobject_cast<QMenuBar*>(now) || qobject_cast<QMenu*>(now))
+    if (qobject_cast<QMenuBar *>(now) || qobject_cast<QMenu *>(now))
         return;
 
     QList<IContext *> newContext;
@@ -996,12 +1004,13 @@ void MainWindow::readSettings()
         m_overrideColor = StyleHelper::baseColor();
     } else {
         StyleHelper::setBaseColor(settings->value(QLatin1String(colorKey),
-                                  QColor(StyleHelper::DEFAULT_BASE_COLOR)).value<QColor>());
+                                                  QColor(StyleHelper::DEFAULT_BASE_COLOR))
+                                      .value<QColor>());
     }
 
     {
         ModeManager::Style modeStyle =
-                ModeManager::Style(settings->value(modeSelectorLayoutKey, int(ModeManager::Style::IconsAndText)).toInt());
+            ModeManager::Style(settings->value(modeSelectorLayoutKey, int(ModeManager::Style::IconsAndText)).toInt());
 
         // Migrate legacy setting from Qt Creator 4.6 and earlier
         static const char modeSelectorVisibleKey[] = "ModeSelectorVisible";
@@ -1127,8 +1136,7 @@ void MainWindow::aboutToShowRecentFiles()
     for (int i = 0; i < recentFiles.count(); ++i) {
         const DocumentManager::RecentFile file = recentFiles[i];
 
-        const QString filePath
-                = Utils::quoteAmpersands(QDir::toNativeSeparators(withTildeHomePath(file.first)));
+        const QString filePath = Utils::quoteAmpersands(QDir::toNativeSeparators(withTildeHomePath(file.first)));
         const QString actionText = ActionManager::withNumberAccelerator(filePath, i + 1);
         QAction *action = menu->addAction(actionText);
         connect(action, &QAction::triggered, this, [file] {
@@ -1143,7 +1151,7 @@ void MainWindow::aboutToShowRecentFiles()
     if (hasRecentFiles) {
         menu->addSeparator();
         QAction *action = menu->addAction(QCoreApplication::translate(
-                                                     "Core", Constants::TR_CLEAR_MENU));
+            "Core", Constants::TR_CLEAR_MENU));
         connect(action, &QAction::triggered,
                 DocumentManager::instance(), &DocumentManager::clearRecentFiles);
     }

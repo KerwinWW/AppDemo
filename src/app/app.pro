@@ -8,8 +8,8 @@ DESTDIR = $$IDE_APP_PATH
 VERSION = $$QTCREATOR_VERSION
 QT -= testlib
 
-HEADERS += ../tools/qtcreatorcrashhandler/crashhandlersetup.h
-SOURCES += main.cpp ../tools/qtcreatorcrashhandler/crashhandlersetup.cpp
+HEADERS += ../tools/qtcreatorcrashhandler/crashhandlersetup.h \
+SOURCES += main.cpp ../tools/qtcreatorcrashhandler/crashhandlersetup.cpp \
 
 include(../rpath.pri)
 

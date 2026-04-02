@@ -37,6 +37,7 @@ ui_*.h
 wrapper.bat
 wrapper.sh
 
+*.qtc_*
 *.pro.user*
 *.pyqtc.user*
 *.qbs.user*
